@@ -328,17 +328,44 @@ condition_map = {
     2: ("Good", "green")
 }
 
-if st.sidebar.button("Predict Condition"):
-    prediction = model.predict(input_scaled)[0]  # Get the predicted class
-    condition, color = condition_map.get(prediction, ("Unknown", "black"))
-    st.write(f"🏗️ **Predicted Bridge Condition:** ")
-    # Center and color the predicted bridge condition
-    st.markdown(f"""
-        <div style="text-align: center; font-size: 60px; font-weight: bold; color: {color};">
-            {condition}
-        </div>
-    """, unsafe_allow_html=True)
+# Apply custom CSS for button styling
+st.markdown(
+    """
+    <style>
+    .stButton>button {
+        width: 100%;
+        background-color: #007BFF;
+        color: white;
+        font-size: 18px;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+    }
+    .stButton>button:hover {
+        background-color: #0056b3;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
+# Move the button to the center at the bottom
+col1, col2, col3 = st.columns([1, 2, 1])  # Centers button in middle column
+with col2:
+    if st.button("Predict Condition"):
+        prediction = model.predict(input_scaled)[0]  # Get predicted class
+        condition_map = {0: ("Poor", "red"), 1: ("Fair", "orange"), 2: ("Good", "green")}
+        condition, color = condition_map.get(prediction, ("Unknown", "black"))
+
+        st.write("🏗️ **Predicted Bridge Condition:**")
+
+        # Center and color the predicted bridge condition
+        st.markdown(f"""
+            <div style="text-align: center; font-size: 60px; font-weight: bold; color: {color};">
+                {condition}
+            </div>
+        """, unsafe_allow_html=True)
 
 # Run the app using:
 # streamlit run app.py
