@@ -169,7 +169,7 @@ structural_material_map = {
 structural_material = st.sidebar.selectbox("Structural Material", list(structural_material_map.keys()))
 structural_material_encoded = structural_material_map[structural_material]
 
-materials = st.sidebar.multiselect(
+materials = st.sidebar.selectbox(
     "Bridge Materials", 
     ["Composite", "Prestressed concrete", "Reinforced concrete", "Steel", "Timber"]
 )
@@ -222,7 +222,7 @@ structural_system_map = {
 structural_system = st.sidebar.selectbox("Structural System", list(structural_system_map.keys()))
 structural_system_encoded = structural_system_map[structural_system]
 
-system = st.sidebar.multiselect(
+system = st.sidebar.selectbox(
     "Bridge System Type", 
     ["Box-girder", "Cable-stayed", "I-girder", "Suspension", "Truss/Arch"]
 )
@@ -350,7 +350,7 @@ scour_criticality = st.sidebar.selectbox("Scour Criticality", list(scour_critica
 scour_criticality_encoded = scour_criticality_map[scour_criticality]
 
 
-damage_types = st.sidebar.multiselect(
+damage_types = st.sidebar.selectbox(
     "Bridge Damage Types", 
     [
         "Collision", "Construction", "Earthquake", "Environmental Degradation", "Fire", "Flood", 
@@ -501,7 +501,7 @@ with col2:
 
         prediction2 = algo2.predict(input_scaled2)[0]  # Get predicted class
         condition_map = {0: ("Trouble", "red"), 1: ("No collapse", "green")}
-        condition2, color = condition_map.get(prediction2, ("Unknown", "black"))
+        condition2, color = condition_map.get(prediction2.item(), ("Unknown", "black"))
 
         st.write("🏗️ **Predicted Bridge Condition based on Algorithm 2:**")
 
