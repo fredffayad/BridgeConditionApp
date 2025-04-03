@@ -191,8 +191,7 @@ encoded_materials = {
 }
 
 # Update the encoded values based on user input
-for material_type in materials:
-    encoded_materials[material_map[material_type]] = True
+encoded_materials[material_map[materials]] = True
 
 structural_system_map = {
     "Slab": "01",
@@ -244,8 +243,7 @@ encoded_systems = {
 }
 
 # Update the encoded values based on user input
-for system_type in system:
-    encoded_systems[system_map[system_type]] = True
+encoded_systems[system_map[system]] = True
 
 numofspans = st.sidebar.number_input("Number of Spans", min_value=0, max_value=607, value=5, step=1)
 lenofmaxspans = st.sidebar.number_input("Length of maximum span (meters)", min_value=0, max_value=2327, value=100, step=1)
@@ -391,8 +389,7 @@ encoded_damage_types = {
 }
 
 # Update encoded values based on user input
-for damage_type in damage_types:
-    encoded_damage_types[damage_map[damage_type]] = True
+encoded_damage_types[damage_map[damage_types]] = True
 
 
 # Prepare input data (before scaling)
