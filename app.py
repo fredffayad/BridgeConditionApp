@@ -10,6 +10,13 @@ with open("bridge_model.pkl", "rb") as model_file:
 with open("scaler.pkl", "rb") as scaler_file:
     scaler = pickle.load(scaler_file)
 
+with open("algo2.pkl", "rb") as model_file:
+    model = pickle.load(model_file)
+
+# Load trained scaler
+with open("scaler2.pkl", "rb") as scaler_file:
+    scaler = pickle.load(scaler_file)
+
 st.markdown("""
     <h1 style='text-align: center;'>Bridge Condition Prediction using AI</h1>
     <h3 style='text-align: center; font-style: italic;'>by Fred Fayad</h3>
@@ -56,6 +63,18 @@ position_on_highway_map = {
 }
 position_on_highway = st.sidebar.selectbox("Position on Highway Network", list(position_on_highway_map.keys()))
 position_on_highway_encoded = position_on_highway_map[position_on_highway]
+location = st.sidebar.selectbox("Location", ["Rural", "Sub-Urban", "Urban"])
+# Convert user input to boolean values for each location type
+location_map = {
+    "Rural": [True, False, False],   # Location_Rural = True, Location_Sub-Urban = False, Location_Urban = False
+    "Sub-Urban": [False, True, False],  # Location_Rural = False, Location_Sub-Urban = True, Location_Urban = False
+    "Urban": [False, False, True]  # Location_Rural = False, Location_Sub-Urban = False, Location_Urban = True
+}
+
+# Get the encoded values
+location_encoded = location_map[location]
+location_rural, location_sub_urban, location_urban = location_encoded
+
 functional_classification_map = {
     "Rural - Principal Arterial - Interstate": 1,
     "Rural - Principal Arterial - Other": 2,
@@ -149,6 +168,32 @@ structural_material_map = {
 }
 structural_material = st.sidebar.selectbox("Structural Material", list(structural_material_map.keys()))
 structural_material_encoded = structural_material_map[structural_material]
+
+materials = st.sidebar.multiselect(
+    "Bridge Materials", 
+    ["Composite", "Prestressed concrete", "Reinforced concrete", "Steel", "Timber"]
+)
+material_map = {
+    "Composite": "Material_Composite",
+    "Prestressed concrete": "Material_Prestressed concrete",
+    "Reinforced concrete": "Material_Reinforced concrete",
+    "Steel": "Material_Steel",
+    "Timber": "Material_Timber"
+}
+
+# Initialize the encoded materials as False
+encoded_materials = {
+    "Material_Composite": False,
+    "Material_Prestressed concrete": False,
+    "Material_Reinforced concrete": False,
+    "Material_Steel": False,
+    "Material_Timber": False
+}
+
+# Update the encoded values based on user input
+for material_type in materials:
+    encoded_materials[material_map[material_type]] = True
+
 structural_system_map = {
     "Slab": "01",
     "Stringer/Multi-beam or Girder": "02",
@@ -176,6 +221,32 @@ structural_system_map = {
 }
 structural_system = st.sidebar.selectbox("Structural System", list(structural_system_map.keys()))
 structural_system_encoded = structural_system_map[structural_system]
+
+system = st.sidebar.multiselect(
+    "Bridge System Type", 
+    ["Box-girder", "Cable-stayed", "I-girder", "Suspension", "Truss/Arch"]
+)
+system_map = {
+    "Box-girder": "System_Box-girder",
+    "Cable-stayed": "System_Cable-stayed",
+    "I-girder": "System_I-girder",
+    "Suspension": "System_Suspension",
+    "Truss/Arch": "System_Truss/Arch"
+}
+
+# Initialize the encoded features as False
+encoded_systems = {
+    "System_Box-girder": False,
+    "System_Cable-stayed": False,
+    "System_I-girder": False,
+    "System_Suspension": False,
+    "System_Truss/Arch": False
+}
+
+# Update the encoded values based on user input
+for system_type in system:
+    encoded_systems[system_map[system_type]] = True
+
 numofspans = st.sidebar.number_input("Number of Spans", min_value=0, max_value=607, value=5, step=1)
 lenofmaxspans = st.sidebar.number_input("Length of maximum span (meters)", min_value=0, max_value=2327, value=100, step=1)
 totalstrlen = st.sidebar.number_input("Total Structure Length (meters)", min_value=0, max_value=23382, value=100, step=1)
@@ -279,6 +350,50 @@ scour_criticality = st.sidebar.selectbox("Scour Criticality", list(scour_critica
 scour_criticality_encoded = scour_criticality_map[scour_criticality]
 
 
+damage_types = st.sidebar.multiselect(
+    "Bridge Damage Types", 
+    [
+        "Collision", "Construction", "Earthquake", "Environmental Degradation", "Fire", "Flood", 
+        "Misc", "Other", "Overload", "Scour", "Storm", "Wind"
+    ]
+)
+
+# Mapping damage types to their corresponding feature names
+damage_map = {
+    "Collision": "Type_Collision",
+    "Construction": "Type_Construction",
+    "Earthquake": "Type_Earthquake",
+    "Environmental Degradation": "Type_Environmental Degradation",
+    "Fire": "Type_Fire",
+    "Flood": "Type_Flood",
+    "Misc": "Type_Misc",
+    "Other": "Type_Other",
+    "Overload": "Type_Overload",
+    "Scour": "Type_Scour",
+    "Storm": "Type_Storm",
+    "Wind": "Type_Wind"
+}
+
+# Initialize encoded damage features as False (all features are False initially)
+encoded_damage_types = {
+    "Type_Collision": False,
+    "Type_Construction": False,
+    "Type_Earthquake": False,
+    "Type_Environmental Degradation": False,
+    "Type_Fire": False,
+    "Type_Flood": False,
+    "Type_Misc": False,
+    "Type_Other": False,
+    "Type_Overload": False,
+    "Type_Scour": False,
+    "Type_Storm": False,
+    "Type_Wind": False
+}
+
+# Update encoded values based on user input
+for damage_type in damage_types:
+    encoded_damage_types[damage_map[damage_type]] = True
+
 
 # Prepare input data (before scaling)
 input_features = np.array([[
@@ -321,12 +436,29 @@ input_features = np.array([[
 # Apply scaling
 input_scaled = scaler.transform(input_features)
 
-# Mapping numerical prediction to condition categories with colors
-condition_map = {
-    0: ("Poor", "red"),
-    1: ("Fair", "yellow"),
-    2: ("Good", "green")
-}
+
+input_features2 = np.array([[
+    lenofmaxspans,
+    bridge_age_special,
+    lanes_on,
+    location_rural, location_sub_urban, location_urban,
+    encoded_systems["System_Box-girder"], encoded_systems["System_Cable-stayed"], 
+    encoded_systems["System_I-girder"], encoded_systems["System_Suspension"], 
+    encoded_systems["System_Truss/Arch"],
+    encoded_materials["Material_Composite"], encoded_materials["Material_Prestressed concrete"], 
+    encoded_materials["Material_Reinforced concrete"], encoded_materials["Material_Steel"], 
+    encoded_materials["Material_Timber"],
+    encoded_damage_types["Type_Collision"], encoded_damage_types["Type_Construction"],
+    encoded_damage_types["Type_Earthquake"], encoded_damage_types["Type_Environmental Degradation"],
+    encoded_damage_types["Type_Fire"], encoded_damage_types["Type_Flood"],
+    encoded_damage_types["Type_Misc"], encoded_damage_types["Type_Other"],
+    encoded_damage_types["Type_Overload"], encoded_damage_types["Type_Scour"],
+    encoded_damage_types["Type_Storm"], encoded_damage_types["Type_Wind"],
+]])
+
+input_scaled2 = scaler2.transform(input_features2)
+
+
 
 # Apply custom CSS for button styling
 st.markdown(
@@ -358,12 +490,25 @@ with col2:
         condition_map = {0: ("Poor", "red"), 1: ("Fair", "orange"), 2: ("Good", "green")}
         condition, color = condition_map.get(prediction, ("Unknown", "black"))
 
-        st.write("🏗️ **Predicted Bridge Condition:**")
+        st.write("🏗️ **Predicted Bridge Condition based on Algorithm 1:**")
 
         # Center and color the predicted bridge condition
         st.markdown(f"""
             <div style="text-align: center; font-size: 60px; font-weight: bold; color: {color};">
                 {condition}
+            </div>
+        """, unsafe_allow_html=True)
+
+        prediction2 = model.predict(input_scaled2)[0]  # Get predicted class
+        condition_map = {0: ("Trouble", "red"), 1: ("No collapse", "green")}
+        condition2, color = condition_map.get(prediction2, ("Unknown", "black"))
+
+        st.write("🏗️ **Predicted Bridge Condition based on Algorithm 2:**")
+
+        # Center and color the predicted bridge condition
+        st.markdown(f"""
+            <div style="text-align: center; font-size: 60px; font-weight: bold; color: {color};">
+                {condition2}
             </div>
         """, unsafe_allow_html=True)
 
