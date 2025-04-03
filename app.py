@@ -499,7 +499,7 @@ with col2:
             </div>
         """, unsafe_allow_html=True)
 
-        prediction2 = model.predict(input_scaled2)[0]  # Get predicted class
+        prediction2 = algo2.predict(input_scaled2)[0]  # Get predicted class
         condition_map = {0: ("Trouble", "red"), 1: ("No collapse", "green")}
         condition2, color = condition_map.get(prediction2, ("Unknown", "black"))
 
