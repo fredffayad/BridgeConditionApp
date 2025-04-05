@@ -9,13 +9,14 @@ with open("bridge_model.pkl", "rb") as model_file:
 # Load trained scaler
 with open("scaler.pkl", "rb") as scaler_file:
     scaler = pickle.load(scaler_file)
+    
 
-#with open("algo2.pkl", "rb") as model_file:
-    #algo2 = pickle.load(model_file)
+with open("algo2.pkl", "rb") as model_file:
+    algo2 = pickle.load(model_file)
 
 
-#with open("scaler2.pkl", "rb") as scaler_file:
-    #scaler2 = pickle.load(scaler_file)
+with open("scaler2.pkl", "rb") as scaler_file:
+    scaler2 = pickle.load(scaler_file)
 
 st.markdown("""
     <h1 style='text-align: center;'>Bridge Condition Prediction using AI</h1>
