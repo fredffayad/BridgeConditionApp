@@ -13,14 +13,9 @@ with open("scaler.pkl", "rb") as scaler_file:
 #with open("algo2.pkl", "rb") as model_file:
     #algo2 = pickle.load(model_file)
 
-# Disable eager execution (optional, to fix possible issues with certain operations)
-tf.compat.v1.disable_eager_execution()
-# Clear the current TensorFlow session
-tf.keras.backend.clear_session()
-algo2 = tf.keras.models.load_model("algo2.keras")
-# Load trained scaler
-with open("scaler2.pkl", "rb") as scaler_file:
-    scaler2 = pickle.load(scaler_file)
+
+#with open("scaler2.pkl", "rb") as scaler_file:
+    #scaler2 = pickle.load(scaler_file)
 
 st.markdown("""
     <h1 style='text-align: center;'>Bridge Condition Prediction using AI</h1>
