@@ -1,7 +1,7 @@
 import streamlit as st
 import pickle
 import numpy as np
-
+import tensorflow as tf
 # Load trained model
 with open("bridge_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
@@ -10,9 +10,9 @@ with open("bridge_model.pkl", "rb") as model_file:
 with open("scaler.pkl", "rb") as scaler_file:
     scaler = pickle.load(scaler_file)
 
-with open("algo2.pkl", "rb") as model_file:
-    algo2 = pickle.load(model_file)
-
+#with open("algo2.pkl", "rb") as model_file:
+    #algo2 = pickle.load(model_file)
+algo2 = tf.keras.models.load_model("algo2.keras")
 # Load trained scaler
 with open("scaler2.pkl", "rb") as scaler_file:
     scaler2 = pickle.load(scaler_file)
