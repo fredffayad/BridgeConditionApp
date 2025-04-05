@@ -25,7 +25,7 @@ st.markdown("""
 # Add the informational statement with an icon
 st.markdown("""
     <p style="font-size:16px;">
-        🔍 <strong>This result is based on a machine learning technique and is guaranteed at 75% using a database composed of 400,000 bridges.</strong>
+        🔍 <strong>These results are based on several machine learning technique and is guaranteed at 80% using a database composed of 400,000 bridges for algorithm 1 and 340 bridges for algorithm 2.</strong>
     </p>
 """, unsafe_allow_html=True)
 
