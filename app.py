@@ -497,8 +497,8 @@ with col2:
         """, unsafe_allow_html=True)
 
         prediction2 = algo2.predict(input_scaled2)[0]  # Get predicted class
-        condition_map = {0: ("Trouble", "red"), 1: ("No collapse", "green")}
-        condition2, color = condition_map.get(prediction2.item(), ("Unknown", "black"))
+        condition_map = {1: ("Trouble", "red"), 0: ("No collapse", "green")}
+        condition2, color = condition_map.get(np.round(prediction2.item()), ("Unknown", "black"))
 
         st.write("🏗️ **Predicted Bridge Condition based on Algorithm 2:**")
 
