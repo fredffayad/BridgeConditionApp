@@ -25,7 +25,7 @@ st.markdown("""
 # Add the informational statement with an icon
 st.markdown("""
     <p style="font-size:16px;">
-        🔍 <strong>These results are based on several machine learning technique and is guaranteed at 80% using a database composed of 400,000 bridges for algorithm 1 and 340 bridges for algorithm 2.</strong>
+        🔍 <strong>These results are based on several machine learning techniques and is guaranteed at 80% using a database composed of 400,000 bridges for algorithm 1 and 340 bridges for algorithm 2.</strong>
     </p>
 """, unsafe_allow_html=True)
 
@@ -500,7 +500,7 @@ with col2:
         condition_map = {1: ("Trouble", "red"), 0: ("No collapse", "green")}
         condition2, color = condition_map.get(np.round(prediction2.item()), ("Unknown", "black"))
 
-        st.write("🏗️ **Predicted Bridge Condition based on Algorithm 2:**")
+        st.write("🏗️ **Predicted Bridge Condition for ", damage_types, " failure mechanism based on Algorithm 2:**")
 
         # Center and color the predicted bridge condition
         st.markdown(f"""
