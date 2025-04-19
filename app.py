@@ -32,6 +32,10 @@ st.markdown("""
 
 st.sidebar.markdown("<h2 style='text-align: left;'>📌 Input Features</h2>", unsafe_allow_html=True)
 
+Latitude = st.sidebar.number_input("Latitude", min_value=0, max_value=99999999, value=32174330, step=1)
+Longitude = st.sidebar.number_input("Longitude", min_value=-76878749, max_value=999999999, value=84583799, step=1)
+Skew = st.sidebar.number_input("Approach roadway width", min_value=0, max_value=99, value=0, step=1)
+
 # Define Route Type mapping
 route_type_map = {
     "Interstate highway": 1,
@@ -46,18 +50,7 @@ route_type_map = {
 route_type = st.sidebar.selectbox("Route Type", list(route_type_map.keys()))
 # Convert selected value to numerical representation
 route_type_encoded = route_type_map[route_type]
-level_of_service_map = {
-    "None of the below": 0,
-    "Mainline": 1,
-    "Alternate": 2,
-    "Bypass": 3,
-    "Spur": 4,
-    "Business": 6,
-    "Ramp, Wye, Connector, etc.": 7,
-    "Service and/or unclassified frontage road": 8
-}
-level_of_service = st.sidebar.selectbox("Level of Service", list(level_of_service_map.keys()))
-level_of_service_encoded = level_of_service_map[level_of_service]
+
 position_on_highway_map = {
     "Inventory Route is not on the Base Network": 0,
     "Inventory Route is on the Base Network": 1
@@ -133,34 +126,7 @@ actual_operational_status_map = {
 }
 actual_operational_status = st.sidebar.selectbox("Actual Operational Status", list(actual_operational_status_map.keys()))
 actual_operational_status_encoded = actual_operational_status_map[actual_operational_status]
-type_of_service_map = {
-    "Highway": 1,
-    "Railroad": 2,
-    "Pedestrian-bicycle": 3,
-    "Highway-railroad": 4,
-    "Highway-pedestrian": 5,
-    "Overpass structure at an interchange or second level of a multilevel interchange": 6,
-    "Third level (Interchange)": 7,
-    "Fourth level (Interchange)": 8,
-    "Building or plaza": 9,
-    "Other": 0
-}
-type_of_service = st.sidebar.selectbox("Type of Service on the Bridge", list(type_of_service_map.keys()))
-type_of_service_encoded = type_of_service_map[type_of_service]
-type_of_service_under_map = {
-    "Highway, with or without pedestrian": 1,
-    "Railroad": 2,
-    "Pedestrian-bicycle": 3,
-    "Highway-railroad": 4,
-    "Waterway": 5,
-    "Highway-waterway": 6,
-    "Railroad-waterway": 7,
-    "Highway-waterway-railroad": 8,
-    "Relief for waterway": 9,
-    "Other": 0
-}
-type_of_service_under = st.sidebar.selectbox("Type of Service Under the Bridge", list(type_of_service_under_map.keys()))
-type_of_service_under_encoded = type_of_service_under_map[type_of_service_under]
+
 structural_material_map = {
     "Concrete": 1,
     "Concrete Continuous": 2,
@@ -246,10 +212,7 @@ encoded_systems = {
 # Update the encoded values based on user input
 encoded_systems[system_map[system]] = True
 
-numofspans = st.sidebar.number_input("Number of Spans", min_value=0, max_value=607, value=5, step=1)
 lenofmaxspans = st.sidebar.number_input("Length of maximum span (meters)", min_value=0, max_value=2327, value=100, step=1)
-totalstrlen = st.sidebar.number_input("Total Structure Length (meters)", min_value=0, max_value=23382, value=100, step=1)
-deckwidth = st.sidebar.number_input("Deck Width (meters)", min_value=0, max_value=999, value=100, step=1)
 
 restriction_map = {
     "Restriction above the bridge": 0,
@@ -258,22 +221,7 @@ restriction_map = {
 restriction = st.sidebar.selectbox("Restriction above the bridge", list(restriction_map.keys()))
 restriction_encoded = restriction_map[restriction]
 vertclrabov = st.sidebar.number_input("Vertical clearance above the bridge (meters) PS: Leave if NA", min_value=0, max_value=31, value=31, step=1)
-structure_beneath_map = {
-    "Highway beneath structure": 0,
-    "Railroad beneath structure": 1,
-    "Feature not a highway or railroad": 2
-}
-structure_beneath = st.sidebar.selectbox("Type of Structure Beneath the Bridge", list(structure_beneath_map.keys()))
-structure_beneath_encoded = structure_beneath_map[structure_beneath]
 vertclrbelow = st.sidebar.number_input("Vertical clearance under the bridge (meters)", min_value=0, max_value=99, value=31, step=1)
-direction_traffic_map = {
-    "Highway traffic not carried": 0,
-    "1-way traffic": 1,
-    "2-way traffic": 2,
-    "One lane bridge for 2-way traffic": 3
-}
-direction_traffic = st.sidebar.selectbox("Direction of Traffic", list(direction_traffic_map.keys()))
-direction_traffic_encoded = direction_traffic_map[direction_traffic]
 bridge_age_special = st.sidebar.number_input("Bridge Age from reconstruction (years) PS:0 if NA", min_value=0, max_value=250, value=50, step=1)
 deck_structure_map = {
     "Concrete Cast-in-Place": 1,
@@ -328,8 +276,6 @@ wearing_surface_encoded = wearing_surface_map[wearing_surface]
 membrane_type_encoded = membrane_type_map[membrane_type]
 deck_protection_encoded = deck_protection_map[deck_protection]
 adtruck = st.sidebar.number_input("Average Daily Truck Traffic (% of ADT)", min_value=0, max_value=99, value=5, step=1)
-Futureadt = st.sidebar.number_input("Future Average Daily Traffic (cars)", min_value=0, max_value=999999, value=5000, step=1)
-deckarea = st.sidebar.number_input("Deck Area (sqm)", min_value=0, max_value=350000, value=5000, step=1)
 scour_criticality_map = {
     "Bridge not over waterway": 12,
     "Bridge with 'unknown' foundation that has not been evaluated for scour": 11,
@@ -395,8 +341,10 @@ encoded_damage_types[damage_map[damage_types]] = True
 
 # Prepare input data (before scaling)
 input_features = np.array([[
+    Latitude,
+    Longitude,
+    Skew,
     route_type_encoded,
-    level_of_service_encoded,
     position_on_highway_encoded,
     functional_classification_encoded,
     bridge_age,
@@ -407,18 +355,11 @@ input_features = np.array([[
     approachroadwaywidth,
     historical_significance_encoded,
     actual_operational_status_encoded,
-    type_of_service_encoded,
-    type_of_service_under_encoded,
     structural_material_encoded,
     structural_system_encoded,
-    numofspans,
     lenofmaxspans,
-    totalstrlen,
-    deckwidth,
     vertclrabov,
-    structure_beneath_encoded,
     vertclrbelow,
-    direction_traffic_encoded,
     bridge_age_special,
     deck_structure_encoded,
     wearing_surface_encoded,
@@ -426,8 +367,6 @@ input_features = np.array([[
     deck_protection_encoded,
     adtruck,
     scour_criticality_encoded,
-    Futureadt,
-    deckarea,
     restriction_encoded,
 ]])
 
