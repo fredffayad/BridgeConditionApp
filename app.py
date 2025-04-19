@@ -34,7 +34,7 @@ st.sidebar.markdown("<h2 style='text-align: left;'>📌 Input Features</h2>", un
 
 Latitude = st.sidebar.number_input("Latitude", min_value=24.396308, max_value=49.345786, value=25.5, step=0.0000001)
 Latitude =Latitude*1000000
-Longitude = st.sidebar.number_input("Longitude", min_value=-125, max_value=-66.93457, value=-80, step=0.000001)
+Longitude = st.sidebar.number_input("Longitude", min_value=-125.0, max_value=-66.93457, value=-80.0, step=0.000001)
 Longitude =Longitude*-10000000
 Skew = st.sidebar.number_input("Skew", min_value=0, max_value=99, value=0, step=1)
 
