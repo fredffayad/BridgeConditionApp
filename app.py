@@ -32,9 +32,11 @@ st.markdown("""
 
 st.sidebar.markdown("<h2 style='text-align: left;'>📌 Input Features</h2>", unsafe_allow_html=True)
 
-Latitude = st.sidebar.number_input("Latitude", min_value=0, max_value=99999999, value=32174330, step=1)
-Longitude = st.sidebar.number_input("Longitude", min_value=-76878749, max_value=999999999, value=84583799, step=1)
-Skew = st.sidebar.number_input("Approach roadway width", min_value=0, max_value=99, value=0, step=1)
+Latitude = st.sidebar.number_input("Latitude", min_value=24.396308, max_value=49.345786, value=25.5, step=0.0000001)
+Latitude =Latitude*1000000
+Longitude = st.sidebar.number_input("Longitude", min_value=-125, max_value=-66.93457, value=-80, step=0.000001)
+Longitude =Longitude*-10000000
+Skew = st.sidebar.number_input("Skew", min_value=0, max_value=99, value=0, step=1)
 
 # Define Route Type mapping
 route_type_map = {
