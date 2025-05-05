@@ -378,7 +378,7 @@ input_scaled = scaler.transform(input_features)
 
 input_features2 = np.array([[
     lenofmaxspans,
-    bridge_age_special,
+    bridge_age,
     lanes_on,
     location_rural, location_sub_urban, location_urban,
     encoded_systems["System_Box-girder"], encoded_systems["System_Cable-stayed"], 
